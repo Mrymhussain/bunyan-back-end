@@ -14,6 +14,13 @@ class UserLoginSchema(BaseModel):
     password: str
 
 
+class UserUpdateSchema(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    specialty: Optional[str] = None
+
+
 class UserSchema(BaseModel):
     id: int
     name: str
