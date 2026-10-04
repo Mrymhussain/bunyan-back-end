@@ -2,12 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database import get_db
-from dependencies.get_current_user import get_current_user
 from models.user import UserModel
 from serializers.user import (
     UserLoginSchema,
     UserRegistrationSchema,
-    UserSchema,
     UserTokenSchema,
 )
 
@@ -25,7 +23,7 @@ def signup(user: UserRegistrationSchema, db: Session = Depends(get_db)):
     if existing_user:
         raise HTTPException(
             status_code=409,
-            detail="Email already exists",
+            detail="Email already exists"
         )
 
     new_user = UserModel(
@@ -45,7 +43,7 @@ def signup(user: UserRegistrationSchema, db: Session = Depends(get_db)):
 
     return {
         "token": token,
-        "message": "Account created successfully",
+        "message": "Account created successfully"
     }
 
 
@@ -60,17 +58,12 @@ def signin(user: UserLoginSchema, db: Session = Depends(get_db)):
     if not db_user or not db_user.verify_password(user.password):
         raise HTTPException(
             status_code=401,
-            detail="Invalid email or password",
+            detail="Invalid email or password"
         )
 
     token = db_user.generate_token()
 
     return {
         "token": token,
-        "message": "Login successful",
+        "message": "Login successful"
     }
-
-
-@router.get("/me", response_model=UserSchema)
-def get_me(current_user: UserModel = Depends(get_current_user)):
-    return current_user
