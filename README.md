@@ -140,7 +140,7 @@ The back end will use FastAPI. All API endpoints will begin with `/api`.
 | --- | --- | --- |
 | POST | `/api/auth/signup` | Create an account |
 | POST | `/api/auth/signin` | Sign in |
-| GET | `/api/auth/me` | Get the current signed-in user |
+| GET | `/api/auth/` | Get the current signed-in user |
 
 ### Users
 
