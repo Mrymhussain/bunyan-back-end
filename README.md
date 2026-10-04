@@ -10,6 +10,14 @@ The aim of BUNYAN is to make the process of building, renovating, or finding the
 
 ---
 
+## Front-End Application
+
+The front-end application and full interface planning can be viewed here:
+
+[BUNYAN Front-End](https://github.com/Mrymhussain/bunyan-front-end)
+
+---
+
 ## Getting Started
 
 ### Deployed App
@@ -57,7 +65,7 @@ The main entities planned for the system are:
 
 ## Component Hierarchy
 
-The component hierarchy shows how the front-end application is planned and how the main pages and components are connected.
+The component hierarchy shows how the application is planned and how the main pages and components are connected.
 
 ![BUNYAN Component Hierarchy](./assets/component-hierarchy.png)
 
@@ -120,161 +128,111 @@ The component hierarchy shows how the front-end application is planned and how t
 - As a client, I want to leave a rating and review.
 - As a client, I want to edit my own review.
 - As a client, I want to delete my own review.
-
 ---
 
-## Front-End Routes
+## Back-End API Endpoints
 
-| Route | Page |
-| --- | --- |
-| `/` | Home |
-| `/sign-up` | Sign Up |
-| `/sign-in` | Sign In |
-| `/dashboard` | Dashboard |
-| `/profile` | Profile |
-| `/profile/edit` | Edit Profile |
-| `/projects` | Projects |
-| `/projects/new` | Create Project |
-| `/projects/:projectId` | Project Details |
-| `/projects/:projectId/edit` | Edit Project |
-| `/professionals` | Engineers and Specialists |
-| `/engineers/:engineerId` | Engineer Profile |
-| `/engineers/:engineerId/consultation` | Request Consultation |
-| `/consultations` | Consultations |
-| `/consultations/:consultationId` | Consultation Details |
-| `/services` | Services and Materials |
-| `/specialists/:specialistId` | Specialist Profile |
-| `/specialists/:specialistId/request` | Request Service |
-| `/service-requests` | Service Requests |
-| `/service-requests/:requestId` | Service Request Details |
-| `/materials` | Materials |
-| `/materials/:materialId` | Material Details |
-| `/materials/new` | Add Material |
-| `/materials/:materialId/edit` | Edit Material |
-| `/orders` | Orders |
-| `/orders/:orderId` | Order Details |
-| `/reviews/new/:userId` | Add Review |
-
----
-
-## Back-End Routes / Endpoints
+The back end will use FastAPI. All API endpoints will begin with `/api`.
 
 ### Authentication
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| POST | `/auth/signup` | Create an account |
-| POST | `/auth/signin` | Sign in |
-| GET | `/auth/me` | Get the current user |
+| POST | `/api/auth/signup` | Create an account |
+| POST | `/api/auth/signin` | Sign in |
+| GET | `/api/auth/me` | Get the current signed-in user |
 
 ### Users
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/users` | Get users |
-| GET | `/users/{user_id}` | Get one user |
-| PUT | `/users/{user_id}` | Update user |
-| DELETE | `/users/{user_id}` | Delete user |
+| GET | `/api/users` | Get users |
+| GET | `/api/users/{user_id}` | Get one user |
+| PUT | `/api/users/{user_id}` | Update user |
+| DELETE | `/api/users/{user_id}` | Delete user |
 
-Users can later be filtered by role or specialty.
+Users can also be filtered by role or specialty.
 
 ### Projects
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/projects` | Get projects |
-| POST | `/projects` | Create project |
-| GET | `/projects/{project_id}` | Get project details |
-| PUT | `/projects/{project_id}` | Update project |
-| DELETE | `/projects/{project_id}` | Delete project |
+| GET | `/api/projects` | Get projects |
+| POST | `/api/projects` | Create a project |
+| GET | `/api/projects/{project_id}` | Get project details |
+| PUT | `/api/projects/{project_id}` | Update a project |
+| DELETE | `/api/projects/{project_id}` | Delete a project |
 
 ### Project Members
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/projects/{project_id}/members` | Get project members |
-| POST | `/projects/{project_id}/members` | Add project member |
-| DELETE | `/projects/{project_id}/members/{member_id}` | Remove project member |
+| GET | `/api/projects/{project_id}/members` | Get project members |
+| POST | `/api/projects/{project_id}/members` | Add project member |
+| DELETE | `/api/projects/{project_id}/members/{member_id}` | Remove project member |
 
 ### Consultations
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/consultations` | Get consultations |
-| POST | `/consultations` | Create consultation |
-| GET | `/consultations/{consultation_id}` | Get consultation |
-| PUT | `/consultations/{consultation_id}` | Update consultation |
-| DELETE | `/consultations/{consultation_id}` | Cancel consultation |
+| GET | `/api/consultations` | Get consultations |
+| POST | `/api/consultations` | Create a consultation |
+| GET | `/api/consultations/{consultation_id}` | Get consultation details |
+| PUT | `/api/consultations/{consultation_id}` | Update a consultation |
+| DELETE | `/api/consultations/{consultation_id}` | Cancel a consultation |
 
 ### Service Categories
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/service-categories` | Get service categories |
-| POST | `/service-categories` | Create category |
-| PUT | `/service-categories/{category_id}` | Update category |
-| DELETE | `/service-categories/{category_id}` | Delete category |
+| GET | `/api/service-categories` | Get service categories |
+| POST | `/api/service-categories` | Create a category |
+| PUT | `/api/service-categories/{category_id}` | Update a category |
+| DELETE | `/api/service-categories/{category_id}` | Delete a category |
 
 ### Service Requests
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/service-requests` | Get service requests |
-| POST | `/service-requests` | Create service request |
-| GET | `/service-requests/{request_id}` | Get service request |
-| PUT | `/service-requests/{request_id}` | Update service request |
-| DELETE | `/service-requests/{request_id}` | Cancel service request |
+| GET | `/api/service-requests` | Get service requests |
+| POST | `/api/service-requests` | Create a service request |
+| GET | `/api/service-requests/{request_id}` | Get service request details |
+| PUT | `/api/service-requests/{request_id}` | Update a service request |
+| DELETE | `/api/service-requests/{request_id}` | Cancel a service request |
 
 ### Materials
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/materials` | Get materials |
-| POST | `/materials` | Add material |
-| GET | `/materials/{material_id}` | Get material |
-| PUT | `/materials/{material_id}` | Update material |
-| DELETE | `/materials/{material_id}` | Delete material |
+| GET | `/api/materials` | Get materials |
+| POST | `/api/materials` | Add a material |
+| GET | `/api/materials/{material_id}` | Get material details |
+| PUT | `/api/materials/{material_id}` | Update a material |
+| DELETE | `/api/materials/{material_id}` | Delete a material |
+
+Materials can also be filtered by category or supplier.
 
 ### Orders
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/orders` | Get orders |
-| POST | `/orders` | Create order |
-| GET | `/orders/{order_id}` | Get order |
-| PUT | `/orders/{order_id}` | Update order |
-| DELETE | `/orders/{order_id}` | Cancel order |
+| GET | `/api/orders` | Get orders |
+| POST | `/api/orders` | Create an order |
+| GET | `/api/orders/{order_id}` | Get order details |
+| PUT | `/api/orders/{order_id}` | Update an order |
+| DELETE | `/api/orders/{order_id}` | Cancel an order |
 
 ### Reviews
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/reviews` | Get reviews |
-| POST | `/reviews` | Create review |
-| GET | `/reviews/{review_id}` | Get review |
-| PUT | `/reviews/{review_id}` | Update review |
-| DELETE | `/reviews/{review_id}` | Delete review |
+| GET | `/api/reviews` | Get reviews |
+| POST | `/api/reviews` | Create a review |
+| GET | `/api/reviews/{review_id}` | Get review details |
+| PUT | `/api/reviews/{review_id}` | Update a review |
+| DELETE | `/api/reviews/{review_id}` | Delete a review |
 
----
-
-## Wireframes
-
-The main screens planned for BUNYAN are:
-
-1. Home
-2. Sign Up
-3. Sign In
-4. What Do You Need?
-5. Dashboard
-6. Projects
-7. Create / Edit Project
-8. Project Details
-9. Professionals
-10. Services & Materials
-
-The wireframes were created in Excalidraw.
-
-[Excalidraw](https://excalidraw.com/)
+Reviews can also be filtered by user.
 
 ---
 
@@ -282,8 +240,10 @@ The wireframes were created in Excalidraw.
 
 The tools used so far for planning and setting up the project are:
 
-
-
+- Git
+- GitHub
+- Visual Studio Code
+- Excalidraw
 
 ---
 
