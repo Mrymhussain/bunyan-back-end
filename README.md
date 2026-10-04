@@ -178,15 +178,6 @@ The component hierarchy shows how the front-end application is planned and how t
 
 Users can later be filtered by role or specialty.
 
-Example:
-
-```text
-/users?role=engineer
-/users?role=specialist
-/users?role=supplier
-/users?specialty=civil
-```
-
 ### Projects
 
 | Method | Endpoint | Description |
