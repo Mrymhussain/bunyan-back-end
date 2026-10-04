@@ -29,7 +29,10 @@ def get_users(
 
 
 @router.get("/{user_id}", response_model=UserSchema)
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+):
     user = db.query(UserModel).filter(UserModel.id == user_id).first()
 
     if not user:
@@ -84,3 +87,19 @@ def update_user(
     db.refresh(user)
 
     return user
+
+
+@router.delete("/{user_id}", status_code=204)
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user),
+):
+    if current_user.id != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Not authorized"
+        )
+
+    db.delete(current_user)
+    db.commit()
