@@ -6,6 +6,7 @@ from . import order
 from . import order_item
 from . import project
 from . import project_member
+from . import review
 from . import service_category
 from . import service_request
 from . import user
