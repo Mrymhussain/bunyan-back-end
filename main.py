@@ -4,21 +4,21 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-load_dotenv()
-
 from controllers.auth import router as AuthRouter
-from controllers.projects import router as ProjectsRouter
-from controllers.users import router as UsersRouter
-from controllers.project_members import router as ProjectMembersRouter
 from controllers.consultations import router as ConsultationsRouter
+from controllers.materials import router as MaterialsRouter
+from controllers.order_items import router as OrderItemsRouter
+from controllers.orders import router as OrdersRouter
+from controllers.project_members import router as ProjectMembersRouter
+from controllers.projects import router as ProjectsRouter
+from controllers.reviews import router as ReviewsRouter
 from controllers.service_categories import router as ServiceCategoriesRouter
 from controllers.service_requests import router as ServiceRequestsRouter
-from controllers.materials import router as MaterialsRouter
-from controllers.orders import router as OrdersRouter
-from controllers.order_items import router as OrderItemsRouter
-from controllers.reviews import router as ReviewsRouter
-app = FastAPI()
+from controllers.users import router as UsersRouter
 
+load_dotenv()
+
+app = FastAPI()
 
 origins = [
     origin.strip()
@@ -26,14 +26,13 @@ origins = [
     if origin.strip()
 ]
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 app.include_router(AuthRouter, prefix="/api")
 app.include_router(UsersRouter, prefix="/api")
@@ -46,6 +45,7 @@ app.include_router(MaterialsRouter, prefix="/api")
 app.include_router(OrdersRouter, prefix="/api")
 app.include_router(OrderItemsRouter, prefix="/api")
 app.include_router(ReviewsRouter, prefix="/api")
+
 
 @app.get("/health")
 def health_check():
