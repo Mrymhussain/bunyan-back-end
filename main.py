@@ -11,6 +11,7 @@ from controllers.projects import router as ProjectsRouter
 from controllers.users import router as UsersRouter
 from controllers.project_members import router as ProjectMembersRouter
 from controllers.consultations import router as ConsultationsRouter
+from controllers.service_categories import router as ServiceCategoriesRouter
 
 app = FastAPI()
 
@@ -35,6 +36,7 @@ app.include_router(UsersRouter, prefix="/api")
 app.include_router(ProjectsRouter, prefix="/api")
 app.include_router(ProjectMembersRouter, prefix="/api")
 app.include_router(ConsultationsRouter, prefix="/api")
+app.include_router(ServiceCategoriesRouter, prefix="/api")
 
 @app.get("/health")
 def health_check():
