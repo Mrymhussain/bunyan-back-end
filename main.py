@@ -16,7 +16,7 @@ from controllers.service_requests import router as ServiceRequestsRouter
 from controllers.materials import router as MaterialsRouter
 from controllers.orders import router as OrdersRouter
 from controllers.order_items import router as OrderItemsRouter
-
+from controllers.reviews import router as ReviewsRouter
 app = FastAPI()
 
 
@@ -45,6 +45,7 @@ app.include_router(ServiceRequestsRouter, prefix="/api")
 app.include_router(MaterialsRouter, prefix="/api")
 app.include_router(OrdersRouter, prefix="/api")
 app.include_router(OrderItemsRouter, prefix="/api")
+app.include_router(ReviewsRouter, prefix="/api")
 
 @app.get("/health")
 def health_check():
