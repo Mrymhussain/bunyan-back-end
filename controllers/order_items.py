@@ -37,7 +37,8 @@ def get_order_items(
         )
 
     if (
-        order.client_id != current_user.id
+        current_user.role != "admin"
+        and order.client_id != current_user.id
         and order.supplier_id != current_user.id
     ):
         raise HTTPException(

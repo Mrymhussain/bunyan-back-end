@@ -15,6 +15,22 @@ from serializers.order import (
 router = APIRouter(prefix="/orders")
 
 
+def get_order_or_404(order_id, db):
+    order = (
+        db.query(OrderModel)
+        .filter(OrderModel.id == order_id)
+        .first()
+    )
+
+    if not order:
+        raise HTTPException(
+            status_code=404,
+            detail="Order not found"
+        )
+
+    return order
+
+
 @router.post("", response_model=OrderSchema, status_code=201)
 def create_order(
     data: OrderCreateSchema,
@@ -48,7 +64,7 @@ def create_order(
     order = OrderModel(
         client_id=current_user.id,
         supplier_id=data.supplier_id,
-        total_price=data.total_price,
+        total_price=0,
     )
 
     db.add(order)
@@ -63,6 +79,9 @@ def get_orders(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
+    if current_user.role == "admin":
+        return db.query(OrderModel).all()
+
     return (
         db.query(OrderModel)
         .filter(
@@ -81,22 +100,15 @@ def get_order(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    order = (
-        db.query(OrderModel)
-        .filter(OrderModel.id == order_id)
-        .first()
+    order = get_order_or_404(order_id, db)
+
+    allowed = (
+        current_user.role == "admin"
+        or order.client_id == current_user.id
+        or order.supplier_id == current_user.id
     )
 
-    if not order:
-        raise HTTPException(
-            status_code=404,
-            detail="Order not found"
-        )
-
-    if (
-        order.client_id != current_user.id
-        and order.supplier_id != current_user.id
-    ):
+    if not allowed:
         raise HTTPException(
             status_code=403,
             detail="Not authorized"
@@ -112,31 +124,41 @@ def update_order(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    order = (
-        db.query(OrderModel)
-        .filter(OrderModel.id == order_id)
-        .first()
-    )
-
-    if not order:
-        raise HTTPException(
-            status_code=404,
-            detail="Order not found"
-        )
+    order = get_order_or_404(order_id, db)
 
     if (
-        order.client_id != current_user.id
-        and order.supplier_id != current_user.id
+        current_user.role != "supplier"
+        or order.supplier_id != current_user.id
     ):
         raise HTTPException(
             status_code=403,
-            detail="Not authorized"
+            detail="Only the assigned supplier can update order status"
         )
 
     update_data = data.model_dump(exclude_unset=True)
 
-    for key, value in update_data.items():
-        setattr(order, key, value)
+    status = update_data.get("status")
+
+    if status is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Supplier can only update order status"
+        )
+
+    allowed_statuses = [
+        "pending",
+        "processing",
+        "ready",
+        "completed",
+    ]
+
+    if status not in allowed_statuses:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid order status"
+        )
+
+    order.status = status
 
     db.commit()
     db.refresh(order)
@@ -150,22 +172,18 @@ def delete_order(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    order = (
-        db.query(OrderModel)
-        .filter(OrderModel.id == order_id)
-        .first()
-    )
-
-    if not order:
-        raise HTTPException(
-            status_code=404,
-            detail="Order not found"
-        )
+    order = get_order_or_404(order_id, db)
 
     if order.client_id != current_user.id:
         raise HTTPException(
             status_code=403,
-            detail="Not authorized"
+            detail="Only the client can cancel this order"
+        )
+
+    if order.status != "pending":
+        raise HTTPException(
+            status_code=400,
+            detail="Only pending orders can be cancelled"
         )
 
     db.delete(order)
