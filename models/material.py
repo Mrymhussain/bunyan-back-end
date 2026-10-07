@@ -17,3 +17,4 @@ class MaterialModel(BaseModel):
     description = Column(Text, nullable=True)
     price = Column(Float, nullable=False)
     stock_quantity = Column(Integer, nullable=False, default=0)
+    image_url = Column(String, nullable=True)

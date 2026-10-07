@@ -8,7 +8,6 @@ from models.user import UserModel
 from serializers.review import (
     ReviewCreateSchema,
     ReviewSchema,
-    ReviewUpdateSchema,
 )
 
 router = APIRouter(prefix="/reviews")
@@ -67,34 +66,30 @@ def create_review(
 @router.get("", response_model=list[ReviewSchema])
 def get_reviews(
     db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user),
 ):
-    return db.query(ReviewModel).all()
+    if current_user.role == "admin":
+        return db.query(ReviewModel).all()
+
+    if current_user.role == "client":
+        return (
+            db.query(ReviewModel)
+            .filter(ReviewModel.client_id == current_user.id)
+            .all()
+        )
+
+    return (
+        db.query(ReviewModel)
+        .filter(
+            ReviewModel.reviewed_user_id == current_user.id
+        )
+        .all()
+    )
 
 
 @router.get("/{review_id}", response_model=ReviewSchema)
 def get_review(
     review_id: int,
-    db: Session = Depends(get_db),
-):
-    review = (
-        db.query(ReviewModel)
-        .filter(ReviewModel.id == review_id)
-        .first()
-    )
-
-    if not review:
-        raise HTTPException(
-            status_code=404,
-            detail="Review not found"
-        )
-
-    return review
-
-
-@router.put("/{review_id}", response_model=ReviewSchema)
-def update_review(
-    review_id: int,
-    data: ReviewUpdateSchema,
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
@@ -110,28 +105,22 @@ def update_review(
             detail="Review not found"
         )
 
-    if review.client_id != current_user.id:
-        raise HTTPException(
-            status_code=403,
-            detail="Not authorized"
-        )
+    if current_user.role == "admin":
+        return review
 
-    if data.rating is not None:
-        if data.rating < 1 or data.rating > 5:
-            raise HTTPException(
-                status_code=400,
-                detail="Rating must be between 1 and 5"
-            )
+    if (
+        current_user.role == "client"
+        and review.client_id == current_user.id
+    ):
+        return review
 
-    update_data = data.model_dump(exclude_unset=True)
+    if review.reviewed_user_id == current_user.id:
+        return review
 
-    for key, value in update_data.items():
-        setattr(review, key, value)
-
-    db.commit()
-    db.refresh(review)
-
-    return review
+    raise HTTPException(
+        status_code=403,
+        detail="Not authorized"
+    )
 
 
 @router.delete("/{review_id}", status_code=204)
@@ -140,6 +129,12 @@ def delete_review(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Only admins can delete reviews"
+        )
+
     review = (
         db.query(ReviewModel)
         .filter(ReviewModel.id == review_id)
@@ -150,12 +145,6 @@ def delete_review(
         raise HTTPException(
             status_code=404,
             detail="Review not found"
-        )
-
-    if review.client_id != current_user.id:
-        raise HTTPException(
-            status_code=403,
-            detail="Not authorized"
         )
 
     db.delete(review)

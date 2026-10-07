@@ -19,6 +19,7 @@ class UserUpdateSchema(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     specialty: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class UserSchema(BaseModel):
@@ -28,6 +29,7 @@ class UserSchema(BaseModel):
     role: str
     specialty: Optional[str] = None
     phone: Optional[str] = None
+    image_url: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -9,6 +9,7 @@ class MaterialCreateSchema(BaseModel):
     description: Optional[str] = None
     price: float
     stock_quantity: int
+    image_url: Optional[str] = None
 
 
 class MaterialUpdateSchema(BaseModel):
@@ -17,6 +18,7 @@ class MaterialUpdateSchema(BaseModel):
     description: Optional[str] = None
     price: Optional[float] = None
     stock_quantity: Optional[int] = None
+    image_url: Optional[str] = None
 
 
 class MaterialSchema(BaseModel):
@@ -27,5 +29,6 @@ class MaterialSchema(BaseModel):
     description: Optional[str] = None
     price: float
     stock_quantity: int
+    image_url: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

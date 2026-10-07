@@ -14,3 +14,4 @@ class ProjectModel(BaseModel):
     budget_range = Column(String, nullable=True)
     status = Column(String, nullable=False, default="pending")
     progress = Column(Integer, nullable=False, default=0)
+    image_url = Column(String, nullable=True)

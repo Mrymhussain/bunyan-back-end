@@ -8,6 +8,7 @@ class ProjectCreateSchema(BaseModel):
     description: Optional[str] = None
     location: str
     budget_range: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class ProjectUpdateSchema(BaseModel):
@@ -18,6 +19,7 @@ class ProjectUpdateSchema(BaseModel):
     budget_range: Optional[str] = None
     status: Optional[str] = None
     progress: Optional[int] = None
+    image_url: Optional[str] = None
 
 
 class ProjectSchema(BaseModel):
@@ -30,5 +32,6 @@ class ProjectSchema(BaseModel):
     budget_range: Optional[str] = None
     status: str
     progress: int
+    image_url: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

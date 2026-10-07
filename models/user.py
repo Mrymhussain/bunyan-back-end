@@ -19,6 +19,7 @@ class UserModel(BaseModel):
     role = Column(String, nullable=False, default="client")
     specialty = Column(String, nullable=True)
     phone = Column(String, nullable=True)
+    image_url = Column(String, nullable=True)
 
     def set_password(self, plain_txt_password: str):
         self.password = pwd_context.hash(plain_txt_password)

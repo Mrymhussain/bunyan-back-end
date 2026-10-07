@@ -33,6 +33,7 @@ def create_project(
         description=data.description,
         location=data.location,
         budget_range=data.budget_range,
+        image_url=data.image_url,
     )
 
     db.add(project)

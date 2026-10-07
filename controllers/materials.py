@@ -60,6 +60,7 @@ def create_material(
         description=data.description,
         price=data.price,
         stock_quantity=data.stock_quantity,
+        image_url=data.image_url,
     )
 
     db.add(material)
