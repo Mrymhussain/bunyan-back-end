@@ -1,5 +1,7 @@
 # BUNYAN
 
+![BUNYAN Logo](./assets/bunyan-logo.png)
+
 BUNYAN is an engineering and property services platform that brings clients, engineers, specialists, and building-material suppliers together in one place.
 
 A client can create an engineering project, request a consultation with an engineer, request smaller property services from specialists, browse building materials, place orders, and track the progress of their requests.
@@ -145,6 +147,20 @@ The main database models are:
 - OrderItem
 - Review
 
+### ERD
+
+The ERD shows the main database entities and relationships used in BUNYAN.
+
+![BUNYAN ERD](./assets/bunyan-erd.png)
+
+---
+
+## Component Hierarchy
+
+The component hierarchy shows how the main parts of the BUNYAN application are connected.
+
+![BUNYAN Component Hierarchy](./assets/component-hierarchy.png)
+
 ---
 
 ## Back-End API
@@ -253,21 +269,6 @@ Project updates are used by the Project Room so the client, assigned engineers, 
 
 ---
 
-## Authentication and Authorization
-
-BUNYAN uses JWT authentication.
-
-Protected routes require a valid token, and the back end checks the user's role before allowing actions.
-
-Examples include:
-
-- Only clients can create projects, consultations, service requests, orders, and reviews.
-- Only assigned engineers can access their assigned project work.
-- Only specialists can update their assigned service-request status.
-- Only suppliers can manage their own materials and update orders for their materials.
-- Admin has platform-level access for monitoring and project-team management.
-
----
 
 ## Technologies Used
 
@@ -301,19 +302,6 @@ https://bunyan-front-end.onrender.com
 
 ---
 
-## Environment Variables
-
-The back end uses environment variables for values that should not be stored directly in the repository.
-
-```text
-DATABASE_URL
-JWT_SECRET
-CORS_ORIGINS
-```
-
-The `.env` file is not committed to GitHub.
-
----
 
 ## Attributions
 
