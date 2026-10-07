@@ -66,6 +66,9 @@ def get_consultations(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
+    if current_user.role == "admin":
+        return db.query(ConsultationModel).all()
+
     return (
         db.query(ConsultationModel)
         .filter(
@@ -97,7 +100,8 @@ def get_consultation(
         )
 
     if (
-        consultation.client_id != current_user.id
+        current_user.role != "admin"
+        and consultation.client_id != current_user.id
         and consultation.engineer_id != current_user.id
     ):
         raise HTTPException(

@@ -16,6 +16,22 @@ from serializers.service_request import (
 router = APIRouter(prefix="/service-requests")
 
 
+def get_request_or_404(request_id, db):
+    service_request = (
+        db.query(ServiceRequestModel)
+        .filter(ServiceRequestModel.id == request_id)
+        .first()
+    )
+
+    if not service_request:
+        raise HTTPException(
+            status_code=404,
+            detail="Service request not found"
+        )
+
+    return service_request
+
+
 @router.post("", response_model=ServiceRequestSchema, status_code=201)
 def create_service_request(
     data: ServiceRequestCreateSchema,
@@ -79,6 +95,9 @@ def get_service_requests(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
+    if current_user.role == "admin":
+        return db.query(ServiceRequestModel).all()
+
     return (
         db.query(ServiceRequestModel)
         .filter(
@@ -97,22 +116,15 @@ def get_service_request(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    service_request = (
-        db.query(ServiceRequestModel)
-        .filter(ServiceRequestModel.id == request_id)
-        .first()
+    service_request = get_request_or_404(request_id, db)
+
+    allowed = (
+        current_user.role == "admin"
+        or service_request.client_id == current_user.id
+        or service_request.specialist_id == current_user.id
     )
 
-    if not service_request:
-        raise HTTPException(
-            status_code=404,
-            detail="Service request not found"
-        )
-
-    if (
-        service_request.client_id != current_user.id
-        and service_request.specialist_id != current_user.id
-    ):
+    if not allowed:
         raise HTTPException(
             status_code=403,
             detail="Not authorized"
@@ -128,28 +140,66 @@ def update_service_request(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    service_request = (
-        db.query(ServiceRequestModel)
-        .filter(ServiceRequestModel.id == request_id)
-        .first()
-    )
-
-    if not service_request:
-        raise HTTPException(
-            status_code=404,
-            detail="Service request not found"
-        )
-
-    if (
-        service_request.client_id != current_user.id
-        and service_request.specialist_id != current_user.id
-    ):
-        raise HTTPException(
-            status_code=403,
-            detail="Not authorized"
-        )
+    service_request = get_request_or_404(request_id, db)
 
     update_data = data.model_dump(exclude_unset=True)
+
+    if current_user.role == "client":
+        if service_request.client_id != current_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Not authorized"
+            )
+
+        allowed_fields = {
+            "description",
+            "location",
+            "preferred_date",
+        }
+
+        update_data = {
+            key: value
+            for key, value in update_data.items()
+            if key in allowed_fields
+        }
+
+    elif current_user.role == "specialist":
+        if service_request.specialist_id != current_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="This request is not assigned to you"
+            )
+
+        update_data = {
+            key: value
+            for key, value in update_data.items()
+            if key == "status"
+        }
+
+        if not update_data:
+            raise HTTPException(
+                status_code=400,
+                detail="Specialists can only update job status"
+            )
+
+        allowed_statuses = [
+            "pending",
+            "accepted",
+            "in_progress",
+            "completed",
+        ]
+
+        if update_data["status"] not in allowed_statuses:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid service request status"
+            )
+
+    else:
+        raise HTTPException(
+            status_code=403,
+            detail="Not authorized to update this request"
+        )
 
     for key, value in update_data.items():
         setattr(service_request, key, value)
@@ -166,22 +216,12 @@ def delete_service_request(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    service_request = (
-        db.query(ServiceRequestModel)
-        .filter(ServiceRequestModel.id == request_id)
-        .first()
-    )
-
-    if not service_request:
-        raise HTTPException(
-            status_code=404,
-            detail="Service request not found"
-        )
+    service_request = get_request_or_404(request_id, db)
 
     if service_request.client_id != current_user.id:
         raise HTTPException(
             status_code=403,
-            detail="Not authorized"
+            detail="Only the client can cancel this request"
         )
 
     db.delete(service_request)
