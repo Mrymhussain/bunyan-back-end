@@ -10,6 +10,7 @@ from controllers.materials import router as MaterialsRouter
 from controllers.order_items import router as OrderItemsRouter
 from controllers.orders import router as OrdersRouter
 from controllers.project_members import router as ProjectMembersRouter
+from controllers.project_updates import router as ProjectUpdatesRouter
 from controllers.projects import router as ProjectsRouter
 from controllers.reviews import router as ReviewsRouter
 from controllers.service_categories import router as ServiceCategoriesRouter
@@ -38,6 +39,7 @@ app.include_router(AuthRouter, prefix="/api")
 app.include_router(UsersRouter, prefix="/api")
 app.include_router(ProjectsRouter, prefix="/api")
 app.include_router(ProjectMembersRouter, prefix="/api")
+app.include_router(ProjectUpdatesRouter, prefix="/api")
 app.include_router(ConsultationsRouter, prefix="/api")
 app.include_router(ServiceCategoriesRouter, prefix="/api")
 app.include_router(ServiceRequestsRouter, prefix="/api")

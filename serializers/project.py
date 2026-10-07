@@ -1,5 +1,7 @@
-from pydantic import BaseModel, ConfigDict
+from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class ProjectCreateSchema(BaseModel):
@@ -17,9 +19,19 @@ class ProjectUpdateSchema(BaseModel):
     description: Optional[str] = None
     location: Optional[str] = None
     budget_range: Optional[str] = None
+    image_url: Optional[str] = None
+
+
+class ProjectWorkUpdateSchema(BaseModel):
     status: Optional[str] = None
     progress: Optional[int] = None
-    image_url: Optional[str] = None
+
+
+class ProjectMeetingSchema(BaseModel):
+    meeting_title: Optional[str] = None
+    meeting_at: Optional[datetime] = None
+    meeting_type: Optional[str] = None
+    meeting_link: Optional[str] = None
 
 
 class ProjectSchema(BaseModel):
@@ -33,5 +45,9 @@ class ProjectSchema(BaseModel):
     status: str
     progress: int
     image_url: Optional[str] = None
+    meeting_title: Optional[str] = None
+    meeting_at: Optional[datetime] = None
+    meeting_type: Optional[str] = None
+    meeting_link: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

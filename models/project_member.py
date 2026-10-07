@@ -1,4 +1,12 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 
 from .base import BaseModel
 
@@ -21,6 +29,17 @@ class ProjectMemberModel(BaseModel):
     discipline = Column(
         String,
         nullable=False
+    )
+
+    approved = Column(
+        Boolean,
+        nullable=False,
+        default=False
+    )
+
+    approval_note = Column(
+        Text,
+        nullable=True
     )
 
     __table_args__ = (

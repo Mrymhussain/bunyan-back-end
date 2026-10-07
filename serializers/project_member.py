@@ -1,4 +1,6 @@
-from pydantic import BaseModel, ConfigDict
+from typing import Optional
+
+from pydantic import BaseModel
 
 
 class ProjectMemberCreateSchema(BaseModel):
@@ -6,10 +8,18 @@ class ProjectMemberCreateSchema(BaseModel):
     discipline: str
 
 
+class ProjectMemberApprovalSchema(BaseModel):
+    approved: bool
+    approval_note: Optional[str] = None
+
+
 class ProjectMemberSchema(BaseModel):
     id: int
     project_id: int
     user_id: int
     discipline: str
-
-    model_config = ConfigDict(from_attributes=True)
+    approved: bool
+    approval_note: Optional[str] = None
+    user_name: Optional[str] = None
+    user_specialty: Optional[str] = None
+    user_image_url: Optional[str] = None
