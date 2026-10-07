@@ -16,17 +16,9 @@ The BUNYAN front-end repository can be viewed here:
 
 [BUNYAN Front-End](https://github.com/Mrymhussain/bunyan-front-end)
 
-### Deployed Front-End
+### Deployed link 
 
 [BUNYAN Live Application](https://bunyan-front-end.onrender.com)
-
----
-
-## Deployed Back-End
-
-The deployed FastAPI back end can be viewed here:
-
-[BUNYAN Back-End](https://bunyan-back-end.onrender.com)
 
 ---
 
